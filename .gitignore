@@ -1,0 +1,6 @@
+# Development clones, each its own git repository (see README.md)
+/aiflow/
+/pyiron_nodes/
+
+# pixi environment
+/.pixi/

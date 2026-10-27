@@ -1,0 +1,94 @@
+[workspace]
+name = "aiflow_env"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[activation.env]
+# The `pyiron_nodes` clone is a bare package directory (no pyproject.toml), so
+# the workspace root holding it must be importable for `import pyiron_nodes`.
+PYTHONPATH = "$PIXI_PROJECT_ROOT"
+# The conda-forge tensorflow build (pulled in by grace-tensorpotential) has an
+# executable-stack flag that glibc >= 2.41 refuses to load. Ignored by older glibc.
+GLIBC_TUNABLES = "glibc.rtld.execstack=2"
+
+[dependencies]
+python = "==3.12"
+
+# Jupyter / widgets
+anywidget = "*"
+ipykernel = "*"
+ipython = "*"
+ipytree = "*"
+ipywidgets = "*"
+jupyterlab = "*"
+nglview = "*"
+traitlets = "*"
+
+# Scientific stack
+h5py = "==3.15.1"
+matplotlib = "==3.10.9"
+numpy = ">=2"  # calphy 1.7.2 uses numpy.trapezoid
+pandas = "==2.2.3"
+pint = "==0.25.2"
+pygments = "*"
+scikit-learn = "==1.6.1"
+scipy = "==1.15.2"
+seaborn = "==0.13.2"
+sqlalchemy = "==2.0.38"
+tqdm = "*"
+
+# Atomistics
+ase = ">=3.26"
+assyst = "==0.13.0"
+atomistics = ">=0.3"
+calphy = "==1.7.2"
+gpaw = "*"
+grace-tensorpotential = "==0.5.5"
+iprpy-data = "==2023.07.25"
+lammps = { version = "==2024.08.29", build = "*openmpi*" }
+lammpsparser = "==0.0.3"
+landau = "==1.7.0"
+matgl = "==2.0.6"
+phonopy = "==2.47.1"
+pymatgen = ">=2025"
+pymatgen-analysis-defects = "==2026.3.20"
+python-ace = "==0.3.1"
+spglib = "*"
+structuretoolkit = "==0.0.42"
+vaspparser = "==0.0.3"
+
+# pyiron ecosystem
+pyiron-data = "==0.0.30"
+pyiron = "*"
+pyiron_atomistics = ">=0.8"
+pyiron_base = ">=0.15"
+pyiron_lammps = ">=0.5"
+pyiron_snippets = "*"
+
+# Execution
+cloudpickle = "==3.1.2"
+executorlib = "==1.9.2"
+pysqa = "==0.4.1"
+
+# LLM / vector DB
+openai = "==2.29.0"
+
+# Testing
+coverage = "*"
+pytest = ">=8"
+deptry = ">=0.25.1,<0.26"
+
+# Development
+pre-commit = "*"
+
+[constraints]
+fastapi = ">=0.122.0"
+pillow = "<13.0.0"
+
+[pypi-dependencies]
+aiflow = { path = "./aiflow", editable = true, extras = ["all"] }
+core_shim = { path = "./aiflow/core_shim" }
+
+[tasks]
+lab = "jupyter lab"
+
