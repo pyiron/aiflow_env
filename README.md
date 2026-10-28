@@ -18,11 +18,18 @@ aiflow_env/
 
 The environment targets `linux-64` only.
 
+CI follows these instructions step by step and then runs the aiflow tests
+(`.github/workflows/install.yml`). It runs every `bash` block below; the
+`<!-- ci: ... -->` comments in the source of this file adapt the steps for CI,
+see `.github/readme_steps.py`.
+
 ## 1. Install pixi
 
 ```bash
 curl -fsSL https://pixi.sh/install.sh | sh
 ```
+
+<!-- ci: run export PATH="$HOME/.pixi/bin:$PATH" -->
 
 Restart your shell (or `source ~/.bashrc`) so `pixi` is on your `PATH`, then
 check it works:
@@ -36,6 +43,7 @@ other options.
 
 ## 2. Clone aiflow_env
 
+<!-- ci: skip (CI runs in its checkout of this repository) -->
 ```bash
 git clone https://github.com/pyiron/aiflow_env.git
 cd aiflow_env
@@ -50,12 +58,11 @@ changes to `pixi.toml` and `pixi.lock`; rerun `pixi install` afterwards.
 git clone https://github.com/pyiron/pyiron_nodes.git
 ```
 
-To work on your own fork instead, clone it and add the main repository as
-`upstream`:
+You can also work with your own fork instead.
 
+<!-- ci: skip -->
 ```bash
 git clone https://github.com/<your-user>/pyiron_nodes.git pyiron_nodes
-git -C pyiron_nodes remote add upstream https://github.com/pyiron/pyiron_nodes.git
 ```
 
 ## 4. Clone aiflow
@@ -66,9 +73,9 @@ git clone https://github.com/pyiron/aiflow.git
 
 Or, from your own fork:
 
+<!-- ci: skip -->
 ```bash
 git clone https://github.com/<your-user>/aiflow.git aiflow
-git -C aiflow remote add upstream https://github.com/pyiron/aiflow.git
 ```
 
 Either way the clones must be named `aiflow` and `pyiron_nodes` (the explicit
@@ -91,9 +98,12 @@ while.
 
 ## 6. Activate the pixi environment
 
+<!-- ci: skip -->
 ```bash
 pixi shell
 ```
+
+<!-- ci: run eval "$(pixi shell-hook)" -->
 
 This starts a subshell with the environment active; leave it with `exit`.
 Activation also sets:
@@ -128,11 +138,14 @@ cd pyiron_nodes && pre-commit install && cd ..
 
 To run all hooks over the whole repository once, e.g. after installing:
 
+<!-- ci: skip -->
 ```bash
 pre-commit run --all-files
 ```
 
 Skip the hooks for a single commit or push with `--no-verify`.
+
+<!-- ci: end -->
 
 # Updating
 
@@ -156,13 +169,6 @@ Pull in each clone as usual:
 ```bash
 git -C aiflow pull
 git -C pyiron_nodes pull
-```
-
-For a fork, fetch from `upstream` instead and merge or rebase, e.g.:
-
-```bash
-git -C aiflow fetch upstream
-git -C aiflow rebase upstream/main
 ```
 
 pyiron_nodes is imported from the clone and aiflow is installed editable, so
