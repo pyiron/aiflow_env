@@ -86,7 +86,24 @@ This resolves the environment from `pixi.lock` and installs it into `.pixi/`.
 The first run downloads several GB (LAMMPS, GPAW, TensorFlow, ...) and takes a
 while.
 
-## 6. Activate the pixi environment
+## 6. Build the aiflow GUI
+
+The `aiflow.gui` widget is written in TypeScript (`aiflow/frontend`) and is
+compiled with npm. Node.js is part of the pixi environment, so build it with:
+
+```bash
+pixi run gui-build
+```
+
+This runs `npm install` and `npm run build` in `aiflow/frontend` and writes
+`widget.js`, `widget.css` and `ngl.js` to `aiflow/src/aiflow/gui/static`.
+Without this step the GUI shows an empty widget.
+
+When working on the frontend, `pixi run gui-dev` rebuilds on every change
+(restart the Jupyter kernel to pick it up) and `pixi run gui-test` runs the
+jest tests.
+
+## 7. Activate the pixi environment
 
 ```bash
 pixi shell
@@ -108,7 +125,7 @@ Check the installation:
 python -c "import pyiron_nodes, aiflow; print('ok')"
 ```
 
-## 7. Install the pre-commit hooks
+## 8. Install the pre-commit hooks
 
 `pre-commit` is part of the pixi environment. With the environment active,
 install the hooks in each repository:
@@ -156,12 +173,14 @@ git -C pyiron_nodes pull
 ```
 
 pyiron_nodes is imported from the clone and aiflow is installed editable, so
-code changes take effect immediately. Two cases need an extra step:
+Python code changes take effect immediately. Three cases need an extra step:
 
 - **aiflow's dependencies changed** (its `pyproject.toml`): run `pixi install`,
   which re-resolves the environment and updates `pixi.lock`.
 - **`aiflow/core_shim` changed**: it is installed non-editable, so reinstall it
   with `pixi reinstall core_shim`.
+- **`aiflow/frontend` changed**: rebuild the GUI with `pixi run gui-build` and
+  restart the Jupyter kernel.
 
 ## Update dependency versions
 

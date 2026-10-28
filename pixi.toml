@@ -80,6 +80,8 @@ deptry = ">=0.25.1,<0.26"
 
 # Development
 pre-commit = "*"
+# Builds the aiflow.gui widget (TypeScript, aiflow/frontend) with npm.
+nodejs = "24.*"  # LTS
 
 [constraints]
 fastapi = ">=0.122.0"
@@ -91,4 +93,10 @@ core_shim = { path = "./aiflow/core_shim" }
 
 [tasks]
 lab = "jupyter lab"
+
+# aiflow.gui widget: compiles aiflow/frontend into aiflow/src/aiflow/gui/static.
+gui-install = { cmd = "npm install", cwd = "aiflow/frontend" }
+gui-build = { cmd = "npm run build", cwd = "aiflow/frontend", depends-on = ["gui-install"] }
+gui-dev = { cmd = "npm run dev", cwd = "aiflow/frontend", depends-on = ["gui-install"] }
+gui-test = { cmd = "npm test", cwd = "aiflow/frontend", depends-on = ["gui-install"] }
 
