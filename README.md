@@ -37,7 +37,7 @@ other options.
 ## 2. Clone aiflow_env
 
 ```bash
-git clone https://github.com/pyiron/aiflow_env.git
+git clone git@github.com:pyiron/aiflow_env.git
 cd aiflow_env
 ```
 
@@ -47,25 +47,25 @@ changes to `pixi.toml` and `pixi.lock`; rerun `pixi install` afterwards.
 ## 3. Clone pyiron_nodes
 
 ```bash
-git clone https://github.com/pyiron/pyiron_nodes.git
+git clone git@github.com:pyiron/pyiron_nodes.git
 ```
 
 You can also work with your own fork instead.
 
 ```bash
-git clone https://github.com/<your-user>/pyiron_nodes.git pyiron_nodes
+git clone git@github.com:<your-user>/pyiron_nodes.git pyiron_nodes
 ```
 
 ## 4. Clone aiflow
 
 ```bash
-git clone https://github.com/pyiron/aiflow.git
+git clone git@github.com:pyiron/aiflow.git
 ```
 
 Or, from your own fork:
 
 ```bash
-git clone https://github.com/<your-user>/aiflow.git aiflow
+git clone git@github.com:<your-user>/aiflow.git aiflow
 ```
 
 Either way the clones must be named `aiflow` and `pyiron_nodes` (the explicit
