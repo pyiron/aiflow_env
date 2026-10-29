@@ -16,7 +16,12 @@ aiflow_env/
 └── pyiron_nodes/    # git clone, importable via PYTHONPATH
 ```
 
-The environment targets `linux-64` only.
+The environment supports `linux-64` and `osx-arm64` (Apple Silicon). Intel
+Macs (`osx-64`) are not supported, since conda-forge has no recent TensorFlow
+build for them. On macOS, GPAW is not installed, because the only osx-arm64
+build needs a newer numpy than pyiron_atomistics allows. All other packages
+are the same, and only the GPAW calculator nodes in pyiron_nodes are
+unavailable.
 
 ## 1. Install pixi
 
@@ -114,7 +119,7 @@ Activation also sets:
 
 - `PYTHONPATH` to this directory, so `import pyiron_nodes` works;
 - `GLIBC_TUNABLES=glibc.rtld.execstack=2`, needed for the conda-forge
-  TensorFlow build on glibc >= 2.41.
+  TensorFlow build on glibc >= 2.41 (has no effect on macOS).
 
 To run a single command without a subshell use `pixi run <command>`, e.g.
 `pixi run lab` to start JupyterLab.
