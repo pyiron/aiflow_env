@@ -204,3 +204,7 @@ changed version pins) to this repository.
 The hook versions are pinned in each repository's `.pre-commit-config.yaml`,
 so a `git pull` there updates them and `pre-commit` installs the new versions
 on its next run. Nothing needs to be reinstalled.
+
+## If using vscode
+
+Set python interpreter to .pixi/envs/default/bin/python
