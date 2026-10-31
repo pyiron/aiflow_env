@@ -30,6 +30,7 @@ matplotlib = "==3.10.9"
 numpy = ">=2"  # calphy 1.7.2 uses numpy.trapezoid
 pandas = "==2.2.3"
 pint = "==0.25.2"
+psycopg2 = "*"  # PostgreSQL driver used by SQLAlchemy (aiflow database settings)
 pygments = "*"
 scikit-learn = "==1.6.1"
 scipy = "==1.15.2"
