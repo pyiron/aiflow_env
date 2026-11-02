@@ -628,7 +628,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/xmltodict-1.0.4-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-4.1.2-pyh5ded981_0.conda
       - pypi: ./aiflow
-      - pypi: ./aiflow/core_shim
       - pypi: ./aiflow_nodes
       - pypi: https://files.pythonhosted.org/packages/02/4b/f1c99a0b27c5ff8b4b131c0d6e62012c17cc424089efe213767db927afd2/langchain_protocol-0.0.20-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/2c/9e69d73c4297508be9e3b64a970ea3971b3eb8db64ffc5802d40bd25981f/jsonschema_path-0.5.0-py3-none-any.whl
@@ -1272,7 +1271,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-h31dac16_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hf451053_7.conda
       - pypi: ./aiflow
-      - pypi: ./aiflow/core_shim
       - pypi: ./aiflow_nodes
       - pypi: https://files.pythonhosted.org/packages/02/4b/f1c99a0b27c5ff8b4b131c0d6e62012c17cc424089efe213767db927afd2/langchain_protocol-0.0.20-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/2c/9e69d73c4297508be9e3b64a970ea3971b3eb8db64ffc5802d40bd25981f/jsonschema_path-0.5.0-py3-none-any.whl
@@ -16318,11 +16316,6 @@ packages:
   - lxml ; extra == 'dev'
   - pre-commit ; extra == 'dev'
   - ruff==0.17.1 ; extra == 'dev'
-  requires_python: '>=3.11'
-- pypi: ./aiflow/core_shim
-  name: core-shim
-  requires_dist:
-  - aiflow
   requires_python: '>=3.11'
 - pypi: ./aiflow_nodes
   name: aiflow-nodes
