@@ -2,7 +2,7 @@
 
 This repository holds the [pixi](https://pixi.sh) environment for developing
 [aiflow](https://github.com/pyiron/aiflow) and
-[pyiron_nodes](https://github.com/pyiron/pyiron_nodes) together. Both are
+[aiflow_nodes](https://github.com/pyiron/aiflow_nodes) together. Both are
 cloned into the root of this repository as independent git repositories (not
 submodules), so you can branch, commit and push in each of them as usual. They
 are listed in `.gitignore`.
@@ -13,14 +13,14 @@ aiflow_env/
 ├── pixi.toml
 ├── pixi.lock
 ├── aiflow/          # git clone, installed editable into the environment
-└── pyiron_nodes/    # git clone, importable via PYTHONPATH
+└── aiflow_nodes/    # git clone, installed editable into the environment
 ```
 
 The environment supports `linux-64` and `osx-arm64` (Apple Silicon). Intel
 Macs (`osx-64`) are not supported, since conda-forge has no recent TensorFlow
 build for them. On macOS, GPAW is not installed, because the only osx-arm64
 build needs a newer numpy than pyiron_atomistics allows. All other packages
-are the same, and only the GPAW calculator nodes in pyiron_nodes are
+are the same, and only the GPAW calculator nodes in aiflow_nodes are
 unavailable.
 
 ## 1. Install pixi
@@ -49,16 +49,16 @@ cd aiflow_env
 All following commands run from this directory. `git pull` here later picks up
 changes to `pixi.toml` and `pixi.lock`; rerun `pixi install` afterwards.
 
-## 3. Clone pyiron_nodes
+## 3. Clone aiflow_nodes
 
 ```bash
-git clone git@github.com:pyiron/pyiron_nodes.git
+git clone git@github.com:pyiron/aiflow_nodes.git
 ```
 
 You can also work with your own fork instead.
 
 ```bash
-git clone git@github.com:<your-user>/pyiron_nodes.git pyiron_nodes
+git clone git@github.com:<your-user>/aiflow_nodes.git aiflow_nodes
 ```
 
 ## 4. Clone aiflow
@@ -73,13 +73,14 @@ Or, from your own fork:
 git clone git@github.com:<your-user>/aiflow.git aiflow
 ```
 
-Either way the clones must be named `aiflow` and `pyiron_nodes` (the explicit
+Either way the clones must be named `aiflow` and `aiflow_nodes` (the explicit
 target directory above takes care of renamed forks), since `pixi.toml` refers
 to them by these paths.
 
-`pixi.toml` installs aiflow from `./aiflow` (editable, with the `all` extras)
-and `core_shim` from `./aiflow/core_shim`, so the clone must exist before the
-next step.
+`pixi.toml` installs aiflow from `./aiflow` (editable, with the `all` extras),
+`core_shim` from `./aiflow/core_shim` and aiflow_nodes from `./aiflow_nodes`
+(editable), so the clones must exist before the next step. The dependencies of
+aiflow_nodes' extras are listed in `pixi.toml` and come from conda-forge.
 
 ## 5. Install the pixi environment
 
@@ -115,11 +116,8 @@ pixi shell
 ```
 
 This starts a subshell with the environment active; leave it with `exit`.
-Activation also sets:
-
-- `PYTHONPATH` to this directory, so `import pyiron_nodes` works;
-- `GLIBC_TUNABLES=glibc.rtld.execstack=2`, needed for the conda-forge
-  TensorFlow build on glibc >= 2.41 (has no effect on macOS).
+Activation also sets `GLIBC_TUNABLES=glibc.rtld.execstack=2`, needed for the
+conda-forge TensorFlow build on glibc >= 2.41 (has no effect on macOS).
 
 To run a single command without a subshell use `pixi run <command>`, e.g.
 `pixi run lab` to start JupyterLab.
@@ -127,7 +125,7 @@ To run a single command without a subshell use `pixi run <command>`, e.g.
 Check the installation:
 
 ```bash
-python -c "import pyiron_nodes, aiflow; print('ok')"
+python -c "import aiflow_nodes, aiflow; print('ok')"
 ```
 
 ## 8. Install the pre-commit hooks
@@ -137,13 +135,13 @@ install the hooks in each repository:
 
 ```bash
 cd aiflow && pre-commit install && cd ..
-cd pyiron_nodes && pre-commit install && cd ..
+cd aiflow_nodes && pre-commit install && cd ..
 ```
 
 - **aiflow** installs a `pre-commit` hook (ruff lint and format) and a
   `pre-push` hook that runs the fast unit tests with `python -m pytest`.
   The push hook uses the active Python, so push from inside `pixi shell`.
-- **pyiron_nodes** installs a `pre-commit` hook (ruff lint/format and black).
+- **aiflow_nodes** installs a `pre-commit` hook (ruff lint and format).
 
 To run all hooks over the whole repository once, e.g. after installing:
 
@@ -168,20 +166,23 @@ This picks up changes to `pixi.toml` and `pixi.lock`. `pixi shell` and
 `pixi run` also bring the environment in sync with the lock file
 automatically, so `pixi install` mainly saves you the wait later.
 
-## Update aiflow and pyiron_nodes
+## Update aiflow and aiflow_nodes
 
 Pull in each clone as usual:
 
 ```bash
 git -C aiflow pull
-git -C pyiron_nodes pull
+git -C aiflow_nodes pull
 ```
 
-pyiron_nodes is imported from the clone and aiflow is installed editable, so
-Python code changes take effect immediately. Three cases need an extra step:
+Both are installed editable, so Python code changes take effect immediately.
+These cases need an extra step:
 
 - **aiflow's dependencies changed** (its `pyproject.toml`): run `pixi install`,
   which re-resolves the environment and updates `pixi.lock`.
+- **aiflow_nodes' dependencies changed** (its `pyproject.toml`): run
+  `pixi install` as well. A new dependency of one of its extras must also be
+  added to `pixi.toml`, since the extras are not installed through pip.
 - **`aiflow/core_shim` changed**: it is installed non-editable, so reinstall it
   with `pixi reinstall core_shim`.
 - **`aiflow/frontend` changed**: rebuild the GUI with `pixi run gui-build` and

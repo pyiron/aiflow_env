@@ -629,6 +629,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-4.1.2-pyh5ded981_0.conda
       - pypi: ./aiflow
       - pypi: ./aiflow/core_shim
+      - pypi: ./aiflow_nodes
       - pypi: https://files.pythonhosted.org/packages/02/4b/f1c99a0b27c5ff8b4b131c0d6e62012c17cc424089efe213767db927afd2/langchain_protocol-0.0.20-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/2c/9e69d73c4297508be9e3b64a970ea3971b3eb8db64ffc5802d40bd25981f/jsonschema_path-0.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/69/6af86ff66492b481c6a4c05dcfd68beb47ed8ba046440a26a2aac76b95c7/opentelemetry_exporter_http_transport-0.66b1-py3-none-any.whl
@@ -1272,6 +1273,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hf451053_7.conda
       - pypi: ./aiflow
       - pypi: ./aiflow/core_shim
+      - pypi: ./aiflow_nodes
       - pypi: https://files.pythonhosted.org/packages/02/4b/f1c99a0b27c5ff8b4b131c0d6e62012c17cc424089efe213767db927afd2/langchain_protocol-0.0.20-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/2c/9e69d73c4297508be9e3b64a970ea3971b3eb8db64ffc5802d40bd25981f/jsonschema_path-0.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/69/6af86ff66492b481c6a4c05dcfd68beb47ed8ba046440a26a2aac76b95c7/opentelemetry_exporter_http_transport-0.66b1-py3-none-any.whl
@@ -16321,6 +16323,52 @@ packages:
   name: core-shim
   requires_dist:
   - aiflow
+  requires_python: '>=3.11'
+- pypi: ./aiflow_nodes
+  name: aiflow-nodes
+  requires_dist:
+  - aiflow
+  - ase>=3.26
+  - cloudpickle
+  - executorlib
+  - jinja2
+  - matplotlib
+  - numpy>=2
+  - pandas
+  - pint
+  - pyyaml
+  - scipy
+  - tqdm
+  - lammpsparser ; extra == 'lammps'
+  - pyiron-lammps ; extra == 'lammps'
+  - pymatgen ; extra == 'vasp'
+  - vaspparser ; extra == 'vasp'
+  - phonopy ; extra == 'structure'
+  - pymatgen ; extra == 'structure'
+  - spglib ; extra == 'structure'
+  - structuretoolkit ; extra == 'structure'
+  - calphy ; extra == 'thermodynamics'
+  - landau ; extra == 'thermodynamics'
+  - pyscal3 ; extra == 'thermodynamics'
+  - seaborn ; extra == 'thermodynamics'
+  - matgl ; extra == 'ml'
+  - pyace ; extra == 'ml'
+  - scikit-learn ; extra == 'ml'
+  - tensorpotential ; extra == 'ml'
+  - assyst ; extra == 'assyst'
+  - gpaw ; extra == 'assyst'
+  - pyiron ; extra == 'pyiron'
+  - pyiron-atomistics ; extra == 'pyiron'
+  - pyiron-base ; extra == 'pyiron'
+  - pyiron-snippets ; extra == 'pyiron'
+  - h5io-browser ; extra == 'database'
+  - pyfileindex ; extra == 'database'
+  - sqlalchemy ; extra == 'database'
+  - ipython ; extra == 'viz'
+  - nglview ; extra == 'viz'
+  - pygments ; extra == 'viz'
+  - seaborn ; extra == 'viz'
+  - aiflow-nodes[lammps,vasp,structure,thermodynamics,ml,assyst,pyiron,database,viz] ; extra == 'all'
   requires_python: '>=3.11'
 - pypi: https://files.pythonhosted.org/packages/02/4b/f1c99a0b27c5ff8b4b131c0d6e62012c17cc424089efe213767db927afd2/langchain_protocol-0.0.20-py3-none-any.whl
   name: langchain-protocol
