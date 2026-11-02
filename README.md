@@ -79,8 +79,9 @@ to them by these paths.
 
 `pixi.toml` installs aiflow from `./aiflow` (editable, with the `all` extras)
 and aiflow_nodes from `./aiflow_nodes` (editable), so the clones must exist
-before the next step. The dependencies of
-aiflow_nodes' extras are listed in `pixi.toml` and come from conda-forge.
+before the next step. aiflow_nodes' conda-forge dependencies are declared once,
+in its own `pyproject.toml` (`[tool.pixi.package.run-dependencies]`), and
+`pixi.toml` pulls them in through its `[dev]` table.
 
 ## 5. Install the pixi environment
 
@@ -181,8 +182,8 @@ These cases need an extra step:
 - **aiflow's dependencies changed** (its `pyproject.toml`): run `pixi install`,
   which re-resolves the environment and updates `pixi.lock`.
 - **aiflow_nodes' dependencies changed** (its `pyproject.toml`): run
-  `pixi install` as well. A new dependency of one of its extras must also be
-  added to `pixi.toml`, since the extras are not installed through pip.
+  `pixi install` as well. A new conda dependency goes into its
+  `[tool.pixi.package.run-dependencies]`, not into `pixi.toml`.
 - **`aiflow/frontend` changed**: rebuild the GUI with `pixi run gui-build` and
   restart the Jupyter kernel.
 

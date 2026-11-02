@@ -2,6 +2,7 @@
 name = "aiflow_env"
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64"]
+preview = ["pixi-build"]
 
 [activation.env]
 # The conda-forge tensorflow build (pulled in by grace-tensorpotential) has an
@@ -21,61 +22,11 @@ jupyterlab = "*"
 nglview = "*"
 traitlets = "*"
 
-# Scientific stack
-h5py = "==3.15.1"
-matplotlib = "==3.10.9"
-numpy = ">=2"  # calphy 1.7.2 uses numpy.trapezoid
-pandas = "==2.2.3"
-pint = "==0.25.2"
+# Bundle-only extras on top of what aiflow_nodes brings in
 psycopg2 = "*"  # PostgreSQL driver used by SQLAlchemy (aiflow database settings)
-pygments = "*"
-scikit-learn = "==1.6.1"
-scipy = "==1.15.2"
-seaborn = "==0.13.2"
-sqlalchemy = "==2.0.38"
-tqdm = "*"
-
-# Needed by aiflow_nodes' extras, which are not installed through pip so that
-# gpaw does not come from PyPI on osx-arm64 (see below)
-h5io_browser = "*"
-jinja2 = "*"
-pyfileindex = "*"
-pyscal3 = "*"
-pyyaml = "*"
-
-# Atomistics
-ase = ">=3.26"
-assyst = "==0.13.0"
 atomistics = ">=0.3"
-calphy = "==1.7.2"
-grace-tensorpotential = "==0.5.5"
-iprpy-data = "==2023.07.25"
-lammps = { version = "==2024.08.29", build = "*openmpi*" }
-lammpsparser = "==0.0.3"
-landau = "==1.7.0"
-matgl = "==2.0.6"
-phonopy = "==2.47.1"
-pymatgen = ">=2025"
 pymatgen-analysis-defects = "==2026.3.20"
-python-ace = "==0.3.1"
-spglib = "*"
-structuretoolkit = "==0.0.42"
-vaspparser = "==0.0.3"
-
-# pyiron ecosystem
-pyiron-data = "==0.0.30"
-pyiron = "*"
-pyiron_atomistics = ">=0.8"
-pyiron_base = ">=0.15"
-pyiron_lammps = ">=0.5"
-pyiron_snippets = "*"
-
-# Execution
-cloudpickle = "==3.1.2"
-executorlib = "==1.9.2"
 pysqa = "==0.4.1"
-
-# LLM / vector DB
 openai = "==2.29.0"
 
 # Testing
@@ -88,11 +39,12 @@ pre-commit = "*"
 # Builds the aiflow.gui widget (TypeScript, aiflow/frontend) with npm.
 nodejs = "24.*"  # LTS
 
-# conda-forge only has gpaw 26.7 for osx-arm64, which needs numpy >= 2.5.3 and
-# conflicts with pyiron_atomistics (numpy <= 2.3.5). aiflow_nodes imports gpaw
-# lazily, so only the GPAW calculator nodes are unavailable on macOS.
-[target.linux-64.dependencies]
-gpaw = "*"
+# Installs the conda dependencies of aiflow_nodes (its [tool.pixi.package]
+# run-dependencies, including the atomistics stack and the linux-only gpaw)
+# without building the package; the package itself is the editable PyPI
+# install below.
+[dev]
+aiflow_nodes = { path = "./aiflow_nodes" }
 
 [constraints]
 fastapi = ">=0.122.0"
