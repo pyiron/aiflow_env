@@ -101,6 +101,7 @@ pillow = "<13.0.0"
 [pypi-dependencies]
 aiflow = { path = "./aiflow", editable = true, extras = ["all", "dev"] }
 aiflow_nodes = { path = "./aiflow_nodes", editable = true }
+aiflow_evals = { path = "./aiflow/evals", editable = true }
 
 [tasks]
 lab = "jupyter lab"
