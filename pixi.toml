@@ -4,46 +4,69 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64"]
 preview = ["pixi-build"]
 
+# The recipes' host requirements pin python to python_min (recipe/variants.yaml
+# in aiflow and aiflow_nodes); [dev] installs them, so python_min must be this
+# workspace's python.
+[workspace.build-variants]
+python_min = ["3.12"]
+
 [activation.env]
 # The conda-forge tensorflow build (pulled in by grace-tensorpotential) has an
 # executable-stack flag that glibc >= 2.41 refuses to load. Ignored by older glibc.
 GLIBC_TUNABLES = "glibc.rtld.execstack=2"
 
+# Only what the bundle adds: the packages' own requirements come from their
+# recipes through [dev] below (see README.md, "Dependencies").
 [dependencies]
 python = "3.12.*"
 
 # Jupyter front end for `pixi run lab`
-ipykernel = "*"
 jupyterlab = "*"
+ipykernel = "*"
 
-# aiflow's requirements (its gui, ai, queue and postgresql extras) from
-# conda-forge: aiflow has no conda package yet, so without these they would
-# come from PyPI with `aiflow[all]` below.  The rest of aiflow's requirements
-# arrive with aiflow_nodes, or are pure-Python PyPI packages.
-anywidget = "*"
-ipytree = "*"
-ipywidgets = "*"
-openai = "*"
-psycopg2-binary = "*"  # the name aiflow's postgresql extra requires
-pysqa = "*"
-traitlets = "*"
-
-# Testing
+# Testing (pytest and pre-commit come with aiflow's dev extra)
 coverage = "*"
-pytest = ">=8"
 deptry = ">=0.25.1,<0.26"
 
-# Development
-pre-commit = "*"
 # Builds the aiflow.gui widget (TypeScript, aiflow/frontend) with npm.
 nodejs = "24.*"  # LTS
 
-# Installs the conda dependencies of aiflow_nodes (its [tool.pixi.package]
-# run-dependencies, including the atomistics stack and the linux-only gpaw)
-# without building the package; the package itself is the editable PyPI
-# install below.
+# TODO(sim-atlas): the conda side of aiflow's gui extra.  aiflow-gui (and so
+# aiflow-all) cannot be in [dev] yet: it needs sim-atlas 0.0.19, which
+# conda-forge does not have (sim-atlas itself comes from PyPI through
+# aiflow[all]).  Replace these with aiflow-all in [dev] once it does.
+anywidget = "*"
+ipytree = "*"
+ipywidgets = "*"
+
+# The conda dependencies of aiflow and aiflow_nodes: every recipe output listed
+# here is a development source, so pixi installs its requirements without
+# building it.  The packages themselves are the editable PyPI installs below.
 [dev]
-aiflow_nodes = { path = "./aiflow_nodes" }
+aiflow = { path = "./aiflow" }
+aiflow-ai = { path = "./aiflow" }
+aiflow-format = { path = "./aiflow" }
+aiflow-mcp = { path = "./aiflow" }
+aiflow-pandas = { path = "./aiflow" }
+aiflow-postgresql = { path = "./aiflow" }
+aiflow-queue = { path = "./aiflow" }
+aiflow-sqlalchemy = { path = "./aiflow" }
+aiflow-nodes = { path = "./aiflow_nodes" }
+aiflow-nodes-assyst = { path = "./aiflow_nodes" }
+aiflow-nodes-database = { path = "./aiflow_nodes" }
+aiflow-nodes-lammps = { path = "./aiflow_nodes" }
+aiflow-nodes-ml = { path = "./aiflow_nodes" }
+aiflow-nodes-pyiron = { path = "./aiflow_nodes" }
+aiflow-nodes-structure = { path = "./aiflow_nodes" }
+aiflow-nodes-thermodynamics = { path = "./aiflow_nodes" }
+aiflow-nodes-vasp = { path = "./aiflow_nodes" }
+aiflow-nodes-viz = { path = "./aiflow_nodes" }
+
+# conda-forge's osx-arm64 gpaw needs a numpy that pyiron_atomistics does not
+# allow; gpaw is imported lazily, so only the GPAW calculator nodes are
+# unavailable on macOS.
+[target.linux-64.dev]
+aiflow-nodes-gpaw = { path = "./aiflow_nodes" }
 
 [constraints]
 fastapi = ">=0.122.0"
@@ -62,4 +85,3 @@ gui-install = { cmd = "npm install", cwd = "aiflow/frontend" }
 gui-build = { cmd = "npm run build", cwd = "aiflow/frontend", depends-on = ["gui-install"] }
 gui-dev = { cmd = "npm run dev", cwd = "aiflow/frontend", depends-on = ["gui-install"] }
 gui-test = { cmd = "npm test", cwd = "aiflow/frontend", depends-on = ["gui-install"] }
-

@@ -79,9 +79,9 @@ to them by these paths.
 
 `pixi.toml` installs aiflow from `./aiflow` (editable, with the `all` extras)
 and aiflow_nodes from `./aiflow_nodes` (editable), so the clones must exist
-before the next step. aiflow_nodes' conda-forge dependencies are declared once,
-in its own `pyproject.toml` (`[tool.pixi.package.run-dependencies]`), and
-`pixi.toml` pulls them in through its `[dev]` table.
+before the next step. Their conda-forge dependencies come from their own conda
+recipes, which `pixi.toml` pulls in through its `[dev]` table (see
+[Dependencies](#dependencies)).
 
 ## 5. Install the pixi environment
 
@@ -179,11 +179,10 @@ git -C aiflow_nodes pull
 Both are installed editable, so Python code changes take effect immediately.
 These cases need an extra step:
 
-- **aiflow's dependencies changed** (its `pyproject.toml`): run `pixi install`,
-  which re-resolves the environment and updates `pixi.lock`.
-- **aiflow_nodes' dependencies changed** (its `pyproject.toml`): run
-  `pixi install` as well. A new conda dependency goes into its
-  `[tool.pixi.package.run-dependencies]`, not into `pixi.toml`.
+- **aiflow's or aiflow_nodes' dependencies changed** (`pyproject.toml` and
+  `recipe/recipe.yaml`): run `pixi install`, which re-resolves the
+  environment and updates `pixi.lock`. A new dependency goes into the package
+  (see [Dependencies](#dependencies)), not into `pixi.toml`.
 - **`aiflow/frontend` changed**: rebuild the GUI with `pixi run gui-build` and
   restart the Jupyter kernel.
 
@@ -204,6 +203,57 @@ changed version pins) to this repository.
 The hook versions are pinned in each repository's `.pre-commit-config.yaml`,
 so a `git pull` there updates them and `pre-commit` installs the new versions
 on its next run. Nothing needs to be reinstalled.
+
+# Dependencies
+
+Each requirement is written down once, in the layer that owns it:
+
+| Layer | Where | Holds | Versions |
+|---|---|---|---|
+| Requirements | `[project]` in `aiflow/pyproject.toml` and `aiflow_nodes/pyproject.toml` | everything the code imports: the core in `dependencies`, the rest in extras | lower bounds, or caps for known API breaks |
+| Conda packaging | `recipe/recipe.yaml` in each repository | one output per extra (`aiflow-gui`, `aiflow-nodes-lammps`, ...), plus only what PyPI cannot provide (LAMMPS, data packages) | as in `[project]` |
+| Environment | `pixi.toml` and `pixi.lock` here | the packages' recipe outputs in `[dev]`, the editable installs, the tools only this bundle uses (JupyterLab, Node.js, ...), `[constraints]` for known breakage | exact, in `pixi.lock` |
+
+The recipes mirror `[project]`; `tools/check_conda_recipe.py` in each
+repository (pre-commit hook, CI) fails when they disagree. Listing a recipe
+output in `[dev]` installs its requirements without building it; the packages
+themselves are the editable PyPI installs. The recipes are also the templates
+for the conda-forge feedstocks.
+
+Some of this waits for publishing; see the TODOs in `pixi.toml` and the
+repositories, and the checklist below.
+
+## Publishing checklist
+
+Prepared but not done yet, in this order:
+
+1. **Rename the aiflow distribution.** `aiflow` on PyPI belongs to an unrelated
+   project. Rename it in `aiflow/pyproject.toml`, the recipe outputs,
+   `aiflow/.github/workflows/release.yml`, the aiflow requirement of
+   aiflow_nodes and aiflow-evals, and `pixi.toml` here. The import name
+   `aiflow` can stay.
+2. **License aiflow_nodes.** It has no license yet; PyPI metadata and
+   conda-forge need one (`license` in `pyproject.toml`, `license` and
+   `license_file` in its recipe).
+3. **Make `pyiron/aiflow` public**, then drop the `AIFLOW_READ` token from
+   aiflow_nodes' CI.
+4. **Get sim-atlas and sim-atlas-toolkit 0.0.19 onto conda-forge** (conda-forge
+   has 0.0.17). Then replace `anywidget`, `ipytree` and `ipywidgets` in
+   `pixi.toml` with `aiflow-all` in `[dev]`, and make the `conda-recipe` CI job
+   in aiflow blocking.
+5. **Release aiflow** to PyPI (`release.yml`), then submit its recipe to
+   [conda-forge/staged-recipes](https://github.com/conda-forge/staged-recipes),
+   with `source` replaced by the PyPI sdist (url and sha256).
+6. **aiflow_nodes:** require a released aiflow (`aiflow>=…` instead of the git
+   revs in `[tool.pixi.dev]` and `[tool.pixi.pypi-dependencies]`), release it
+   to PyPI (it needs a release workflow like aiflow's), submit its recipe to
+   staged-recipes, and make its `conda-recipe` CI job blocking.
+7. **Here:** add a user environment that installs `aiflow-all` and the
+   `aiflow-nodes-*` outputs from conda-forge; keep the development environment
+   on the clones.
+
+Once the feedstocks exist, the conda-forge bot follows the PyPI releases, and
+the check scripts keep the in-repository recipes in step with `[project]`.
 
 ## If using vscode
 
