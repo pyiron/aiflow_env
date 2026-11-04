@@ -12,22 +12,21 @@ GLIBC_TUNABLES = "glibc.rtld.execstack=2"
 [dependencies]
 python = "3.12.*"
 
-# Jupyter / widgets
-anywidget = "*"
+# Jupyter front end for `pixi run lab`
 ipykernel = "*"
-ipython = "*"
+jupyterlab = "*"
+
+# aiflow's requirements (its gui, ai, queue and postgresql extras) from
+# conda-forge: aiflow has no conda package yet, so without these they would
+# come from PyPI with `aiflow[all]` below.  The rest of aiflow's requirements
+# arrive with aiflow_nodes, or are pure-Python PyPI packages.
+anywidget = "*"
 ipytree = "*"
 ipywidgets = "*"
-jupyterlab = "*"
-nglview = "*"
+openai = "*"
+psycopg2-binary = "*"  # the name aiflow's postgresql extra requires
+pysqa = "*"
 traitlets = "*"
-
-# Bundle-only extras on top of what aiflow_nodes brings in
-psycopg2 = "*"  # PostgreSQL driver used by SQLAlchemy (aiflow database settings)
-atomistics = ">=0.3"
-pymatgen-analysis-defects = "==2026.3.20"
-pysqa = "==0.4.1"
-openai = "==2.29.0"
 
 # Testing
 coverage = "*"
