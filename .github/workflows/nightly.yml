@@ -1,0 +1,67 @@
+name: Nightly
+
+# Installs the workspace against the current main of aiflow and aiflow_nodes
+# and runs their checks in it.  Neither repository's CI uses this workspace,
+# so a pixi.lock or pixi.toml that has fallen behind them (a new dependency,
+# a renamed extra) shows up here instead of on the next `pixi install`.
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    env:
+      # The Python checks don't need the GUI widget; skip its npm build.
+      SKIP_JUPYTER_BUILDER: "1"
+    steps:
+      - uses: actions/checkout@v4
+      # pyiron/aiflow is private: AIFLOW_READ is a token that can read it, as
+      # in aiflow_nodes' CI.
+      - uses: actions/checkout@v4
+        with:
+          repository: pyiron/aiflow
+          path: aiflow
+          token: ${{ secrets.AIFLOW_READ }}
+      - uses: actions/checkout@v4
+        with:
+          repository: pyiron/aiflow_nodes
+          path: aiflow_nodes
+      # locked: fails when pixi.lock no longer matches pixi.toml and the
+      # packages' metadata; re-lock with `pixi install` and commit pixi.lock.
+      - id: install
+        uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          pixi-version: v0.83.0
+          locked: true
+          cache: true
+      # Every `pixi run` names the workspace manifest: aiflow_nodes has a pixi
+      # manifest of its own, which pixi would otherwise pick inside it.
+      - name: aiflow tests
+        working-directory: aiflow
+        run: >-
+          pixi run --manifest-path ../pixi.toml python -m pytest -q
+          tests/unit/core tests/unit/ai tests/unit/database tests/unit/gui evals/tests
+      - name: aiflow pylint and deptry
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: aiflow
+        run: |
+          pixi run --manifest-path ../pixi.toml pylint src/aiflow evals/src tests evals/tests
+          pixi run --manifest-path ../pixi.toml deptry src
+          cd evals && pixi run --manifest-path ../../pixi.toml deptry src
+      - name: aiflow ruff
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: aiflow
+        run: |
+          pixi run --manifest-path ../pixi.toml ruff check .
+          pixi run --manifest-path ../pixi.toml ruff format --check .
+      - name: aiflow docs
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: aiflow
+        run: pixi run --manifest-path ../pixi.toml mkdocs build --strict
+      - name: aiflow_nodes tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: aiflow_nodes
+        run: pixi run --manifest-path ../pixi.toml python -m pytest -q tests
