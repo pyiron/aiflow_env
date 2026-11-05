@@ -16,25 +16,42 @@ python = "3.12.*"
 ipykernel = "*"
 jupyterlab = "*"
 
-# aiflow's requirements (its gui, ai, queue and postgresql extras) from
-# conda-forge: aiflow has no conda package yet, so without these they would
+# aiflow's requirements (its base install and its ai, database and gui extras)
+# from conda-forge: aiflow has no conda package yet, so without these they would
 # come from PyPI with `aiflow[all]` below.  The rest of aiflow's requirements
 # arrive with aiflow_nodes, or are pure-Python PyPI packages.
 anywidget = "*"
 ipytree = "*"
 ipywidgets = "*"
 openai = "*"
-psycopg2-binary = "*"  # the name aiflow's postgresql extra requires
+psycopg2-binary = "*"  # the name aiflow's database extra requires
 pysqa = "*"
 traitlets = "*"
 
 # Testing
 coverage = "*"
+
+# aiflow's `dev` dependency group: tests, linting and the docs build.  pixi
+# cannot install a dependency group of a path dependency, so the group is
+# repeated here; keep it in step with aiflow/pyproject.toml, ruff's pin
+# especially (it must match aiflow/.pre-commit-config.yaml).
 pytest = ">=8"
+lxml = "*"
+pre-commit = "*"
+ruff = "==0.17.1"
+pylint = ">=4.1,<5"
 deptry = ">=0.25.1,<0.26"
+mkdocs = ">=1.6,<2"
+mkdocs-material = ">=9.7,<10"
+pymdown-extensions = ">=10.0"
+mkdocs-glightbox = ">=0.5"
+mkdocstrings-python = "*"
+mkdocstrings = ">=1.0,<2"
+mkdocs-gen-files = ">=0.5"
+mkdocs-literate-nav = ">=0.6"
+mkdocs-section-index = ">=0.3"
 
 # Development
-pre-commit = "*"
 # Builds the aiflow.gui widget (TypeScript, aiflow/frontend) with npm.
 nodejs = "24.*"  # LTS
 
@@ -50,7 +67,7 @@ fastapi = ">=0.122.0"
 pillow = "<13.0.0"
 
 [pypi-dependencies]
-aiflow = { path = "./aiflow", editable = true, extras = ["all", "dev"] }
+aiflow = { path = "./aiflow", editable = true, extras = ["all"] }
 aiflow_nodes = { path = "./aiflow_nodes", editable = true }
 aiflow_evals = { path = "./aiflow/evals", editable = true }
 

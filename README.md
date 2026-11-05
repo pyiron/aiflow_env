@@ -77,9 +77,11 @@ Either way the clones must be named `aiflow` and `aiflow_nodes` (the explicit
 target directory above takes care of renamed forks), since `pixi.toml` refers
 to them by these paths.
 
-`pixi.toml` installs aiflow from `./aiflow` (editable, with the `all` extras)
+`pixi.toml` installs aiflow from `./aiflow` (editable, with the `all` extra)
 and aiflow_nodes from `./aiflow_nodes` (editable), so the clones must exist
-before the next step. aiflow_nodes' conda-forge dependencies are declared once,
+before the next step. aiflow's development tools (its `dev` dependency group:
+pytest, ruff, pylint, deptry, mkdocs, …) are listed in `pixi.toml` itself,
+because pixi cannot install a dependency group of a path dependency. aiflow_nodes' conda-forge dependencies are declared once,
 in its own `pyproject.toml` (`[tool.pixi.package.run-dependencies]`), and
 `pixi.toml` pulls them in through its `[dev]` table.
 
