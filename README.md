@@ -1,3 +1,5 @@
+[![Nightly](https://github.com/pyiron/aiflow_env/actions/workflows/nightly.yml/badge.svg)](https://github.com/pyiron/aiflow_env/actions/workflows/nightly.yml)
+
 # Installation
 
 This repository holds the [pixi](https://pixi.sh) environment for developing
