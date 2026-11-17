@@ -1,6 +1,9 @@
 # Development clones, each its own git repository (see README.md)
 /aiflow/
 /aiflow_nodes/
+/pyiron_nodes/
 
 # pixi environment
 /.pixi/
+
+.DS_Store

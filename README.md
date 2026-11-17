@@ -156,6 +156,28 @@ pre-commit run --all-files
 
 Skip the hooks for a single commit or push with `--no-verify`.
 
+## 9. Use the environment in VS Code (optional)
+
+Notebooks in VS Code need the Python and Jupyter extensions. VS Code does not
+discover pixi environments by itself, so register the environment as a Jupyter
+kernel (from the root of this repository):
+
+```bash
+pixi run python -m ipykernel install --user --name aiflow-pixi --display-name "aiflow (pixi)"
+```
+
+Then quit and reopen VS Code (a window reload is not always enough). Open a
+notebook, click the kernel picker, choose **Select Another Kernel… → Jupyter
+Kernel…** and pick **aiflow (pixi)**. Check that it is the right one:
+
+```python
+import sys; print(sys.executable)  # .../aiflow_env/.pixi/envs/default/bin/python
+```
+
+For `.py` files, run **Python: Select Interpreter → Enter interpreter path…**
+and enter the absolute path of `.pixi/envs/default/bin/python` in this
+repository.
+
 # Updating
 
 All commands run from the root of this repository.
@@ -208,7 +230,3 @@ changed version pins) to this repository.
 The hook versions are pinned in each repository's `.pre-commit-config.yaml`,
 so a `git pull` there updates them and `pre-commit` installs the new versions
 on its next run. Nothing needs to be reinstalled.
-
-## If using vscode
-
-Set python interpreter to .pixi/envs/default/bin/python
