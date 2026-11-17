@@ -144,10 +144,11 @@ cd aiflow && pre-commit install && cd ..
 cd aiflow_nodes && pre-commit install && cd ..
 ```
 
-- **aiflow** installs a `pre-commit` hook (ruff lint and format) and a
-  `pre-push` hook that runs the fast unit tests with `python -m pytest`.
-  The push hook uses the active Python, so push from inside `pixi shell`.
-- **aiflow_nodes** installs a `pre-commit` hook (ruff lint and format).
+Each repository installs a `pre-commit` hook (ruff lint and format, notebook
+outputs, binary and large files) and a `pre-push` hook that runs the tests not
+marked `slow`: aiflow its fast unit tests, aiflow_nodes its test suite. The
+push hooks use the active Python, so push from inside `pixi shell`; without an
+active environment they stop and say so.
 
 To run all hooks over the whole repository once, e.g. after installing:
 
