@@ -1,6 +1,8 @@
 # Development clones, each its own git repository (see README.md)
 /aiflow/
 /aiflow_nodes/
+# git worktrees of the clones (see README.md)
+/worktrees/
 /pyiron_nodes/
 
 # pixi environment
