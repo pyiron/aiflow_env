@@ -15,7 +15,8 @@ aiflow_env/
 ├── pixi.toml
 ├── pixi.lock
 ├── aiflow/          # git clone, installed editable into the environment
-└── aiflow_nodes/    # git clone, installed editable into the environment
+├── aiflow_nodes/    # git clone, installed editable into the environment
+└── worktrees/       # optional: git worktrees of the clones
 ```
 
 The environment supports `linux-64` and `osx-arm64` (Apple Silicon). Intel
@@ -212,6 +213,27 @@ These cases need an extra step:
   `[tool.pixi.package.run-dependencies]`, not into `pixi.toml`.
 - **`aiflow/frontend` changed**: rebuild the GUI with `pixi run gui-build` and
   restart the Jupyter kernel.
+
+## Work in git worktrees
+
+For independent work next to your main checkout (a second branch, or an
+agent's task), create a git worktree of a clone in the gitignored `worktrees/`
+folder:
+
+```bash
+git -C aiflow fetch origin
+git -C aiflow worktree add -b <branch> ../worktrees/aiflow-<branch> origin/main
+```
+
+The environment stays the one in this directory; don't run `pixi install` in a
+worktree. The clones are installed editable, so outside pytest Python imports
+the clones, not the worktree: prefix commands with `PYTHONPATH=src`. The
+`AGENTS.md` of each repository has the details. Remove a worktree with
+`git -C aiflow worktree remove ../worktrees/aiflow-<branch>` once its branch is
+merged.
+
+This repository itself can't be worked on in a worktree: `pixi lock` needs
+`aiflow/` and `aiflow_nodes/` next to `pixi.toml`.
 
 ## Update dependency versions
 
