@@ -33,23 +33,18 @@ coverage = "*"
 
 # aiflow's `dev` dependency group: tests, linting and the docs build.  pixi
 # cannot install a dependency group of a path dependency, so the group is
-# repeated here; keep it in step with aiflow/pyproject.toml, ruff's pin
-# especially (it must match aiflow/.pre-commit-config.yaml).
+# repeated here; keep it in step with aiflow/pyproject.toml, especially the
+# exact pins of ruff (it must match aiflow/.pre-commit-config.yaml) and zensical.
 pytest = ">=8"
 lxml = "*"
 pre-commit = "*"
 ruff = "==0.17.5"
 pylint = ">=4.1,<5"
 deptry = ">=0.25.1,<0.26"
-mkdocs = ">=1.6,<2"
-mkdocs-material = ">=9.7,<10"
-pymdown-extensions = ">=10.0"
-mkdocs-glightbox = ">=0.5"
-mkdocstrings-python = "*"
+zensical = "==0.1.2"
+mkdocstrings-python = ">=2.0,<3"
 mkdocstrings = ">=1.0,<2"
-mkdocs-gen-files = ">=0.5"
-mkdocs-literate-nav = ">=0.6"
-mkdocs-section-index = ">=0.3"
+pymdown-extensions = ">=11"
 
 # Development
 # Builds the aiflow.gui widget (TypeScript, aiflow/frontend) with npm.
