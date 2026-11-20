@@ -60,7 +60,11 @@ jobs:
       - name: aiflow docs
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         working-directory: aiflow
-        run: pixi run --manifest-path ../pixi.toml mkdocs build --strict
+        # aiflow builds its site with Zensical; gen_ref_pages.py writes the
+        # API reference pages it reads (see aiflow's AGENTS.md, "Docs").
+        run: |
+          pixi run --manifest-path ../pixi.toml python docs/gen_ref_pages.py
+          pixi run --manifest-path ../pixi.toml zensical build --strict
       - name: aiflow_nodes tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         working-directory: aiflow_nodes
