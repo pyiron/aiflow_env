@@ -23,8 +23,9 @@ jupyterlab = "*"
 anywidget = "*"
 ipywidgets = "*"
 openai = "*"
-psycopg2-binary = "*"  # the name aiflow's database extra requires
+psycopg = "*"  # aiflow's database extra requires psycopg[binary]; conda ships it compiled
 pysqa = "*"
+sqlalchemy = ">=2.1"  # as aiflow's database extra; else the solve keeps an older lock
 traitlets = "*"
 
 # Testing
