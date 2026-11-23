@@ -1,4 +1,4 @@
-name: Nightly
+name: (Nightly) consistancy check
 
 # Installs the workspace against the current main of aiflow and aiflow_nodes
 # and runs their checks in it.  Neither repository's CI uses this workspace,
@@ -9,6 +9,9 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
   workspace:
