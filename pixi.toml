@@ -23,7 +23,10 @@ jupyterlab = "*"
 anywidget = "*"
 ipywidgets = "*"
 openai = "*"
-psycopg2-binary = "*"  # the name aiflow's database extra requires
+# aiflow's database extra; conda-forge has no psycopg-binary, so its [binary]
+# extra comes from PyPI.
+psycopg = "*"
+sqlalchemy = ">=2.1"
 pysqa = "*"
 traitlets = "*"
 
